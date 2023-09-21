@@ -7,7 +7,7 @@
     display: block;
     
   }
-  
+  .navbg{ background: linear-gradient(225deg, rgba(0, 255, 255, 0.309) 0.99%, rgba(216, 49, 189, 0.32) 46.89%, rgba(21, 227, 227, 0.227) 100%);}
   /* Tablet and desktop styles */
   @media (min-width: 640px) {
     .menu-list {
@@ -21,7 +21,10 @@
       box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
     }
   }
-  
+ .bgp {background: linear-gradient(180deg, rgba(255, 254, 254, 0.41) 0%, rgba(255, 254, 254, 0.38) 100%);
+  border: 2px solid #FFFFFF;
+  box-shadow: 8px 10px 18px rgba(0, 0, 0, 0.25);
+  border-radius: 20p}
   /* Adjust styles for larger screens if needed */
   @media (max-width: 568px) {
     /* Add your additional styles here */

@@ -1,0 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Edu+VIC+WA+NT+Beginner&family=Josefin+Sans&family=Pacifico&display=swap');
+footer {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: space-between;
+}
+
+.col {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin-bottom: 10px;
+}
+
+footer h4 {
+    font-size: 20px;
+    padding-bottom: 10px;
+}
+
+footer p {
+    font-size: 15px;
+    padding-bottom: 5px;
+
+}
+
+footer a {
+    text-decoration: none;
+    color: #2e2e2e;
+    padding-bottom: 10px;
+
+}
+
+.follow i {
+    color: #22024a;
+    padding-right: 4px;
+    cursor: pointer;
+}
+
+.follow i:hover,
+a:hover {
+
+    color: #cb03c7;
+}
+
+.row img {
+    border: 1px solid #007f13;
+    border-radius: 6px;
+}
+
+.copyright {
+    text-align: center;
+    width: 100%;
+}
+.bgD{
+    background: linear-gradient(225deg, rgba(0, 255, 255, 0.21) 0.99%, rgba(216, 49, 189, 0.32) 46.89%, rgba(21, 227, 227, 0.01) 100%);
+}

@@ -1,0 +1,27 @@
+.ConfrimShippingAre>p{
+    color:rgb(65, 63, 63);
+    font-size: 3vmax;
+    border-bottom: 2px solid rgb(120, 120, 120);
+}
+.confrimCartItemContiner>p{
+    color:rgb(65, 63, 63);
+    font-size: 3vmax;
+}
+.OrderSummary>p{
+    color:rgb(65, 63, 63);
+    font-size: 3vmax;
+    border-bottom: 2px solid rgb(120, 120, 120);
+}
+.borderXL{
+    color: greenyellow;
+    border-bottom: 2px solid rgb(120, 120, 120);
+}
+.bgD{
+    background: linear-gradient(225deg, rgba(0, 255, 255, 0.21) 0.99%, rgba(216, 49, 189, 0.32) 46.89%, rgba(21, 227, 227, 0.01) 100%);
+}
+.Box{
+    background: linear-gradient(180deg, rgba(255, 254, 254, 0.41) 0%, rgba(255, 254, 254, 0.38) 100%);
+    border: 2px solid #FFFFFF;
+    box-shadow: 8px 10px 18px rgba(0, 0, 0, 0.25);
+    border-radius: 20px
+}

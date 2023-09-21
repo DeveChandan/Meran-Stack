@@ -1,0 +1,138 @@
+
+.cartX >svg{
+font-size: 5vmax;
+color: tomato;
+}
+.cartX>p{
+font-size: 2vmax;
+}
+
+.cartContainer {
+    width: 96%;
+    margin: auto;
+    display: grid;
+    grid-template-columns: 4fr 1fr 1fr;
+    
+  }
+  
+  .cartInput {
+    display: flex;
+    align-items: center;
+    height: 8vmax;
+  
+  }
+  
+  .cartInput > button {
+    border: none;
+    background-color: black;
+    padding: 0.2vmax;
+    cursor: pointer;
+    color: white;
+    transition: background-color 0.5s; /* Changed from "all" to "background-color" */
+  }
+  
+  .cartInput > button:hover {
+    background-color: blue; /* Change the color for hover effect */
+  }
+  
+  .cartInput > input {
+    border: none;
+    padding: 0.2vmax;
+    width: 3vmax; /* Adjusted width for better readability */
+    cursor: pointer;
+    text-align: center;
+    outline: none;
+    color: black; /* Changed text color to black */
+    font: 100 1.5vmax "Roboto";
+  }
+  .subtotal{
+    display: flex;
+    padding: 3vmax 0vmax;
+    box-sizing: border-box;
+    font: 300 1.5vmax cursive;
+    justify-content: flex-end;
+    color: rgb(5, 0, 0);
+  }
+  .grossBody{
+    display: grid;
+    grid-template-columns: 2fr 1.3fr;
+  }
+  .grossBox{
+    border-top:3px solid rgb(71, 108, 255);
+    margin: 1vmax 1.5vmax;
+    padding: 2vmax 0vmax;
+    box-sizing: border-box;
+    display: flex;
+    justify-content: space-between;
+  }
+  .checkOut{
+    display: flex;
+    justify-content: flex-end;
+  }
+  .checkOut>button{
+    background: rgb(7, 195, 1);
+    color: white;
+    width: 50%;
+    border: none;
+    padding: 0.8vmax 4vmax;
+    font: 200 1.5vmax 'Roboto';
+    margin: 1vmax 4vmax;
+    cursor: pointer;
+    border-radius: 30px;
+  }
+  .continer {
+    display: grid;
+    background-color: rgb(71, 191, 255);
+    grid-template-columns: 4fr 1fr 1fr;
+    border-radius: 10px 10px  0 0  ;
+    margin: auto;
+    color: rgb(255, 255, 255);
+    width: 100%;
+
+}
+
+.continer>p {
+    margin: 5px;
+}
+
+.continer>p:last-child {
+    text-align: end;
+}
+
+.page {
+    padding: 5vmax;
+  
+}
+.bgD{
+    background: linear-gradient(225deg, rgba(0, 255, 255, 0.21) 0.99%, rgba(216, 49, 189, 0.32) 46.89%, rgba(21, 227, 227, 0.01) 100%);
+}
+.Details{
+    background: linear-gradient(180deg, rgba(255, 254, 254, 0.41) 0%, rgba(255, 254, 254, 0.38) 100%);
+    border: 2px solid #FFFFFF;
+    box-shadow: 8px 10px 18px rgba(0, 0, 0, 0.25);
+    border-radius: 10px;
+    
+}
+@media  screen and (max-width:600px) {
+    .cartInput > input {
+       
+        font: 100 1.4vmax "Roboto";
+      }
+      .cartInput > button {
+     
+        padding: 0.1vmax;
+       
+      }
+      .subtotal{
+        display: flex;
+        padding: 3vmax 0vmax;
+        box-sizing: border-box;
+        font: 300 1.8vmax cursive;
+        justify-content: flex-end;
+        color: rgb(5, 0, 0);
+      }
+      .grossBody{
+        display: grid;
+        grid-template-columns: 0fr 1.3fr;
+      }
+}

@@ -6,7 +6,15 @@ const sendToken = require("../utils/jwtToken");
 const sendEmail = require("../utils/sendEmail");
 const crypto = require("crypto");
 const Product = require("../model/ProductModel");
+const cloudinary=require('cloudinary')
+const validator = require("validator");
 exports.registerUser = catchAsyncError(async (req, res, next) => {
+
+  myCloud=await cloudinary.v2.uploader.upload(req.body.avatar,{
+folder:"avatars",
+width:150,
+crop:"scale",
+  })
   const { name, email, password } = req.body;
 
   const user = await User.create({
@@ -14,11 +22,11 @@ exports.registerUser = catchAsyncError(async (req, res, next) => {
     email,
     password,
     avatar: {
-      public_id: "This is the sample id",
-      url: "profilepicUrl",
+      public_id: myCloud.public_id,
+      url:myCloud.secure_url,
     },
   });
-  sendToken(user, 200, res);
+sendToken(user,201,res)
 });
 //LoginUser
 exports.loginUser = catchAsyncError(async (req, res, next) => {
@@ -38,7 +46,7 @@ exports.loginUser = catchAsyncError(async (req, res, next) => {
   if (!isPasswordMatched) {
     return next(new handleErrors("Invalid email or password", 401));
   }
-  sendToken(user, 201, res);
+  sendToken(user,200,res)
 });
 
 //User Logout
@@ -54,13 +62,34 @@ exports.logout = catchAsyncError(async (req, res, next) => {
   });
 });
 //Forgot Password
+// Function to generate reset token
+const generateResetToken = function () {
+  const resetToken = crypto.randomBytes(20).toString("hex");
+  this.resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(resetToken)
+    .digest("hex");
+  this.resetPasswordExpires = Date.now() + 15 * 60 * 1000; // Set expiration time to 15 minutes
+  return resetToken;
+};
+
+// Forgot Password
 exports.forgotPassword = async (req, res, next) => {
   try {
     const { email } = req.body;
 
-    // Check if the user exists with the provided email
+    // Check if the email is provided and is a valid email address
+    if (!email || !validator.isEmail(email)) {
+      return res.status(400).json({
+        success: false,
+        message: "Please provide a valid email address",
+      });
+    }
+
+    // Find the user with the provided email
     const user = await User.findOne({ email });
 
+    // If user not found, return error response
     if (!user) {
       return res.status(404).json({
         success: false,
@@ -68,13 +97,11 @@ exports.forgotPassword = async (req, res, next) => {
       });
     }
 
-    // Generate reset token
+    // Generate reset token and save the user
     const resetToken = user.generateResetToken();
-
-    // Save the user with the reset token and expiration
     await user.save({ validateBeforeSave: false });
 
-    // Construct the reset password URL
+    // Compose the reset password URL
     const resetPasswordUrl = `${req.protocol}://${req.get(
       "host"
     )}/api/v1/password/reset/${resetToken}`;
@@ -101,50 +128,77 @@ exports.forgotPassword = async (req, res, next) => {
       message: "Internal Server Error",
     });
   }
+}; 
+// Reset Password
+exports.resetPassword = async (req, res, next) => {
+  try {
+    // Find the user by the reset token and check the expiration time
+    const user = await User.findOne({
+      resetPasswordToken: req.params.token,
+      resetPasswordExpires: { $gt: Date.now() },
+    });
+
+    if (!user) {
+      return res.status(400).json({
+        success: false,
+        message: 'Reset password token has expired or is invalid',
+      });
+    }
+
+    // Update the user's password and clear the reset token
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+
+    // Save the updated user document
+    await user.save();
+
+    res.status(200).json({
+      success: true,
+      message: 'Password reset successfully',
+    });
+  } catch (error) {
+    // Handle any errors that occurred during the process
+    console.error(error);
+    return res.status(500).json({
+      success: false,
+      message: 'Internal Server Error',
+    });
+  }
 };
-//ResetPassword
-exports.resetPassword = catchAsyncError(async (req, res, next) => {
-  //create token hash
-  const resetPasswordToken = crypto
-    .createHash("Sha256")
-    .update(req.params.token)
-    .digest("hex");
 
-  const user = await User.findOne({
-    resetPasswordToken,
-    resetPasswordExpire: { $st: Date.now() },
-  });
-
-  if (!user) {
-    return res.status(400).json({
-      success: false,
-      message: "Reset Password token has been expired ",
-    });
-  }
-  if (req.body.password !== req.body.confirmPassword) {
-    return res.status(400).json({
-      success: false,
-      message: "Password dose not Password ",
-    });
-  }
-
-  user.password = req.body.password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpire = undefined;
-
-  await user.save();
-  sendToken(user, 200, res);
-});
+// ... other user-related controller functions ...
 
 //Get user detils
-exports.getUserDetils = catchAsyncError(async (req, res, next) => {
-  const user = await User.findById(req.user.id);
+/*exports.getUserDetils = async (req, res) => {
   res.status(200).json({
     success: true,
-    User,
+    user: req.user,
   });
-});
+};*/
+exports.getUserDetils = async (req, res, next) => {
+  try {
+   // const { id } = ;
+    const user = await User.findById(req.user.id);
 
+    if (!user) {
+      return res.status(404).json({
+        success: false,
+        message: "User not found",
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      user, 
+    });
+  } catch (error) {
+    return res.status(500).json({
+      success: false,
+      message: "Internal Server Error",
+    });
+  }
+};
 //updatePassword
 exports.updatePassword = catchAsyncError(async (req, res, next) => {
   const user = await User.findById(req.user.id).select("+password");
@@ -320,7 +374,7 @@ exports.getDeleteReview = catchAsyncError(async (req, res, next) => {
     (rev) => rev._id.toString() !== req.query.id.toString()
   );
 
-  let avg = 0;
+  let avg = 0; 
   reviews.forEach((rev) => {
     avg += rev.rating;
   });

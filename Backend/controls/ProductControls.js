@@ -8,35 +8,97 @@ const createProduct = catchAsyncError(async (req, res, next) => {
   const product = await Product.create(req.body);
 
   res.status(201).json({
-    success: true,
+    success: true,  
     product,
   });
 });
 
-const getAllproducts = catchAsyncError(async (req, res) => {
+const getAllproducts = async (req, res) => {
+  const resultPerPage = 8;
+  const { page = 1, keyword = '', minPrice = 0, maxPrice = Infinity, category = '', minReviews = 0,maxReviews=5 } = req.query;
+
   try {
+    const parsedPage = parseInt(page);
+    if (isNaN(parsedPage) || parsedPage <= 0) {
+      throw new Error('Invalid page value');
+    }
+
+    // Filter conditions
+    const filter = {
+      name: { $regex: keyword, $options: 'i' },
+      price: { $gte: parseInt(minPrice), $lte: parseInt(maxPrice) },
+    };
+    if (category !== '') {
+      filter.category = category; 
+    }
+    if (minReviews > 0 || maxReviews < 5) {
+      filter.reviews = { $gte: parseInt(minReviews), $lte: parseInt(maxReviews) };
+    }
+
+
+    const countPromise = Product.countDocuments(filter).exec();
+
+    const productsPromise = Product.find(filter)
+      .limit(resultPerPage)
+      .skip((parsedPage - 1) * resultPerPage)
+      .exec();
+
+    const [count, products] = await Promise.all([countPromise, productsPromise]);
+    const totalPages = Math.ceil(count / resultPerPage);
+
+    res.status(200).json({
+      success: true,
+      products,
+      productCount: count,
+      resultPerPage,
+      currentPage: parsedPage,
+      totalPages,
+    });
+  } catch (error) {
+    res.status(500).json({
+      success: false,
+      message: 'Failed to retrieve products',
+      error: error.message,
+    });
+  }
+};
+
+
+
+/*const getAllproducts = async (req, res) => {
+  const resultPerPage = req.query.resultPerPage ? parseInt(req.query.resultPerPage) : 7;
+  const page = req.query.page ? parseInt(req.query.page) : 1;
+
+  try {
+    const productCount = await Product.countDocuments();
     const features = new APIFeatures(Product.find(), req.query)
+      .search()
       .filter()
       .sort()
       .limitFields()
-      .paginate();
+      .paginate(resultPerPage);
 
     const products = await features.query;
 
     res.status(200).json({
       success: true,
       products,
+      productCount,
+      resultPerPage,
+      currentPage: page,
+      totalPages: Math.ceil(productCount / resultPerPage),
     });
   } catch (error) {
     res.status(500).json({
       success: false,
       message: "Failed to retrieve products",
       error: error.message,
-    });
+    });  
   }
-});
+};*/
 
 //getProductDetails
+
 const getProductDetails = catchAsyncError(async (req, res, next) => {
   try {
     const productId = req.params.id;
@@ -56,56 +118,11 @@ const getProductDetails = catchAsyncError(async (req, res, next) => {
       message: "Failed to retrieve product details",
       error: error.message,
     });
-  }
+  } 
 });
 
-//UpdateProduct
 
-/*const UpdateProduct = catchAsyncError(async (req, res, next) => {
-  try {
-    const productId = req.params.id;
-    const product = await Product.findById(productId);
-
-    if (!product) {
-      return res.status(404).json({
-        success: false,
-        message: "Product Not Found",
-      });
-    }
-
-    // Update the product with the new data
-    product.name = req.body.name;
-    product.description = req.body.description;
-    product.price = req.body.price;
-    // ...
-
-    const updatedProduct = await product.save();
-      
-    res.status(200).json({
-      success: true,
-      product: updatedProduct,
-      message: "Product updated successfully",
-    });
-  } catch (error) {
-    if (error.name === "ValidationError") {
-      // Custom error message for validation errors
-      const errorMessage = Object.values(error.errors).map((err) => err.message);
-      return res.status(400).json({
-        success: false,
-        message: "Validation Error",
-        errors: errorMessage,
-      });
-    }
-
-    res.status(500).json({
-      success: false,
-      message: "Failed to update product",
-      error: error.message,
-    });
-  }
-});
-*/
-const UpdateProduct = catchAsyncError(async (req, res,next) => {
+const UpdateProduct = catchAsyncError(async (req, res, next) => {
   try {
     let product = await Product.findById(req.params.id); // Corrected variable name
 
@@ -134,7 +151,6 @@ const UpdateProduct = catchAsyncError(async (req, res,next) => {
     });
   }
 });
-
 
 //Delete Product
 const deleteProduct = catchAsyncError(async (req, res, next) => {
@@ -167,4 +183,5 @@ module.exports = {
   UpdateProduct,
   deleteProduct,
   getProductDetails,
+  
 };

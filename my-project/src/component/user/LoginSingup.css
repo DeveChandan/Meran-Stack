@@ -1,0 +1,57 @@
+.bgD{
+    background: linear-gradient(225deg, rgba(0, 255, 255, 0.21) 0.99%, rgba(216, 49, 189, 0.32) 46.89%, rgba(21, 227, 227, 0.01) 100%);
+}
+.lgBg{
+    background: linear-gradient(180deg, rgba(255, 254, 254, 0.41) 0%, rgba(255, 254, 254, 0.38) 100%);
+    border: 2px solid #FFFFFF;
+    box-shadow: 8px 10px 18px rgba(0, 0, 0, 0.25);
+    border-radius: 20px
+}
+.bt{
+    border: 2px solid white;
+}
+.bg{
+    cursor: pointer;
+    background-color: rgb(5, 206, 206);
+}
+.bg:hover{
+    font-weight: 500;
+   
+}
+.ShiftToLeft {
+  transform: translateX(-100%);
+  transition: transform 0.5s;
+}
+
+.ShiftToNetural {
+  transform: translateX(0%);
+  transition: transform 0.5s;
+}
+
+.ShiftToNeturalForm2 {
+  transform: translateX(-100%);
+  transform: translateY(-100%);
+  transition: transform 0.5s;
+}
+
+.ShiftToRight {
+  transform: translateX(100%);
+  transition: transform 0.5s;
+}
+
+.singupForm2 {
+  transform: translateX(100%);
+  transform: translateY(-100%);
+
+  transition: transform 0.5s;
+  overflow: hidden;
+  visibility: hidden;
+}
+
+.showSignupForm .singupForm2 {
+  transform: translateX(0%);
+  transform: translateY(-66%);
+
+  visibility: visible;
+}
+

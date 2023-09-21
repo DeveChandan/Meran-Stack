@@ -1,13 +1,6 @@
 .bg{
- background-color: #E9E9E9;
+    background: linear-gradient(225deg, rgba(0, 255, 255, 0.21) 0.99%, rgba(216, 49, 189, 0.32) 46.89%, rgba(21, 227, 227, 0.01) 100%);
 
-}
-.bg1{
- 
-    width: 500px;
-    height:500px;
-background: linear-gradient(179.94deg, #BD00FF 0.05%, #FF0000 99.95%);
-filter: blur(10.5rem);
 }
 
 h1{

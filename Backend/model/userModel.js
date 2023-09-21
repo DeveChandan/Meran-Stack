@@ -36,6 +36,10 @@ const userSchema = new mongoose.Schema({
     type: String,
     default: "user",
   },
+  createdAt: {
+    type: Date,
+    default: Date.now,
+  },
   resetPasswordToken: String,
   resetPasswordExpire: Date,
 });
@@ -59,7 +63,7 @@ userSchema.methods.comparePasswords = async function (enteredPassword) {
   return await bcript.compare(enteredPassword, this.password);
 };
 
-userSchema.methods.generateResetToken = function() {
+userSchema.methods.generateResetToken = function () {
   const resetToken = crypto.randomBytes(20).toString("hex");
   this.resetPasswordToken = crypto
     .createHash("sha256")
@@ -72,4 +76,3 @@ userSchema.methods.generateResetToken = function() {
 const User = mongoose.model("User", userSchema);
 
 module.exports = User;
-       
